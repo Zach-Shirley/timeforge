@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Timeforge Settings</title>
+  <link rel="stylesheet" href="review-shared.css">
+  <link rel="stylesheet" href="/dashboard/review-shared.css">
+</head>
+<body>
+  <main>
+    <nav class="top-nav" aria-label="App navigation">
+      <a href="/">Home</a>
+      <a href="/dashboard/daily.html">Daily</a>
+      <a href="/weekly">Weekly</a>
+      <a href="/monthly">Monthly</a>
+      <a href="/dashboard/trends.html">Trends</a>
+      <a href="/dashboard/compare.html">Compare</a>
+      <a href="/db">DB</a>
+    </nav>
+
+    <header>
+      <div>
+        <h1>Settings</h1>
+        <p class="subtle">Current scoring profile and classification doctrine.</p>
+      </div>
+    </header>
+
+    <section class="panel">
+      <div class="section-title">
+        <h2>Score Profile</h2>
+        <span class="subtle" id="profileName"></span>
+      </div>
+      <div class="settings-grid" id="scoreSettings"></div>
+    </section>
+
+    <section class="depth-grid">
+      <article class="panel status-list">
+        <h2>Suffix Rules</h2>
+        <div id="suffixRules"></div>
+      </article>
+      <article class="panel status-list">
+        <h2>Wake-Cycle Rule</h2>
+        <p id="wakeRule"></p>
+      </article>
+    </section>
+  </main>
+  <script src="settings.js" onerror="this.onerror=null; this.src='/dashboard/settings.js';"></script>
+</body>
+</html>

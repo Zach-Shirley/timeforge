@@ -1,0 +1,16 @@
+{
+  "event_id_overrides": {
+    "google_event_id_here": {
+      "drift": 0.7,
+      "soft": 0.3,
+      "note": "Example mixed block: 70% entertainment, 30% learning."
+    }
+  },
+  "title_overrides": {
+    "example mixed title": {
+      "hard": 0.5,
+      "soft": 0.5,
+      "note": "Example title-level override."
+    }
+  }
+}

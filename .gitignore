@@ -1,0 +1,30 @@
+# Local config and private calendar data
+.env
+Data/*
+!Data/.gitkeep
+!Data/normalization_overrides.example.json
+
+# Generated static export can include personal timeline data
+Dashboard/data/*
+!Dashboard/data/.gitkeep
+!Dashboard/data/app-data.example.json
+Dashboard/time-tracking-baseline-*.html
+
+# Personal generated review notes
+Reviews/*
+!Reviews/.gitkeep
+
+# Runtime logs and caches
+App/logs/*
+!App/logs/.gitkeep
+*.log
+*.sqlite
+*.sqlite-*
+__pycache__/
+*.py[cod]
+
+# Local tooling
+.venv/
+venv/
+.DS_Store
+Thumbs.db

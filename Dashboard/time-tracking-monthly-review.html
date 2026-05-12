@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Timeforge Monthly Review</title>
+  <link rel="stylesheet" href="review-shared.css">
+  <link rel="stylesheet" href="/dashboard/review-shared.css">
+</head>
+<body>
+  <main>
+    <nav class="top-nav" aria-label="App navigation">
+      <a href="/">Home</a>
+      <a href="/dashboard/daily.html">Daily</a>
+      <a href="/weekly">Weekly</a>
+      <a href="/dashboard/trends.html">Trends</a>
+      <a href="/dashboard/compare.html">Compare</a>
+      <a href="/db">DB</a>
+    </nav>
+
+    <header>
+      <div>
+        <h1>Monthly Review</h1>
+        <p class="subtle" id="subtitle">Loading month...</p>
+      </div>
+      <div class="review-window">
+        <label class="period-control">
+          Month
+          <select id="periodSelect" aria-label="Review month"></select>
+        </label>
+        <p class="subtle" id="targetText"></p>
+        <p class="subtle" id="sourceText"></p>
+      </div>
+    </header>
+
+    <section class="metric-row" id="metricRow" aria-label="Monthly totals"></section>
+
+    <section class="panel mix-panel">
+      <div class="section-title">
+        <h2>Monthly Mix</h2>
+        <span class="subtle">Hover a segment for category and hours</span>
+      </div>
+      <div class="mix-track" id="mixTrack" aria-label="Monthly category mix"></div>
+    </section>
+
+    <section class="score-row">
+      <article class="grade-card">
+        <h3>Month Score</h3>
+        <div class="grade" id="grade"></div>
+        <p class="subtle" id="scoreText"></p>
+      </article>
+
+      <article class="panel score-bars" id="scoreBars" aria-label="Score components"></article>
+    </section>
+
+    <section class="review-row monthly">
+      <article class="panel review-card">
+        <h3>Win</h3>
+        <p id="winText"></p>
+      </article>
+      <article class="panel review-card">
+        <h3>Leak</h3>
+        <p id="leakText"></p>
+      </article>
+      <article class="panel review-card">
+        <h3>Average Daily Sleep</h3>
+        <div class="sleep-number" id="sleepDisplay"></div>
+        <p class="subtle" id="sleepDetail"></p>
+      </article>
+    </section>
+
+    <section class="depth-grid">
+      <article class="panel">
+        <div class="section-title">
+          <h2>Week-By-Week Mix</h2>
+          <span class="subtle">stacked distribution</span>
+        </div>
+        <div class="week-bars" id="weekBars"></div>
+      </article>
+
+      <aside class="panel">
+        <div class="section-title">
+          <h2>Trajectory</h2>
+          <span class="subtle">month read</span>
+        </div>
+        <div class="trend-list" id="trendList"></div>
+      </aside>
+    </section>
+
+    <section class="depth-grid">
+      <article class="panel callout-list">
+        <h2>Month Notes</h2>
+        <div id="monthNotes"></div>
+      </article>
+
+      <article class="panel callout-list">
+        <h2>Data Notes</h2>
+        <div id="dataNotes"></div>
+      </article>
+    </section>
+  </main>
+
+  <script src="monthly-review.js" onerror="this.onerror=null; this.src='/dashboard/monthly-review.js';"></script>
+</body>
+</html>

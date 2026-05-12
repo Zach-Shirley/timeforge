@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Timeforge Weekly Review</title>
+  <link rel="stylesheet" href="review-shared.css">
+  <link rel="stylesheet" href="/dashboard/review-shared.css">
+</head>
+<body>
+  <main>
+    <nav class="top-nav" aria-label="App navigation">
+      <a href="/">Home</a>
+      <a href="/dashboard/daily.html">Daily</a>
+      <a href="/monthly">Monthly</a>
+      <a href="/dashboard/trends.html">Trends</a>
+      <a href="/dashboard/compare.html">Compare</a>
+      <a href="/db">DB</a>
+    </nav>
+
+    <header>
+      <div>
+        <h1>Weekly Review</h1>
+        <p class="subtle" id="subtitle">Loading week...</p>
+      </div>
+      <div class="review-window">
+        <label class="period-control">
+          Week
+          <select id="periodSelect" aria-label="Review week"></select>
+        </label>
+        <p class="subtle" id="targetText"></p>
+        <p class="subtle" id="sourceText"></p>
+      </div>
+    </header>
+
+    <section class="metric-row" id="metricRow" aria-label="Weekly totals"></section>
+
+    <section class="panel mix-panel">
+      <div class="section-title">
+        <h2>Weekly Mix</h2>
+        <span class="subtle">Hover a segment for category and hours</span>
+      </div>
+      <div class="mix-track" id="mixTrack" aria-label="Weekly category mix"></div>
+    </section>
+
+    <section class="score-row">
+      <article class="grade-card">
+        <h3>Score</h3>
+        <div class="grade" id="grade"></div>
+        <p class="subtle" id="scoreText"></p>
+      </article>
+
+      <article class="panel score-bars" id="scoreBars" aria-label="Score components"></article>
+    </section>
+
+    <section class="review-row">
+      <article class="panel review-card">
+        <h3>Win</h3>
+        <p id="winText"></p>
+      </article>
+      <article class="panel review-card">
+        <h3>Leak</h3>
+        <p id="leakText"></p>
+      </article>
+      <article class="panel review-card">
+        <h3>Average Daily Sleep</h3>
+        <div class="sleep-number" id="sleepDisplay"></div>
+        <p class="subtle" id="sleepDetail"></p>
+      </article>
+    </section>
+
+    <section class="panel detail-panel">
+      <div class="section-title">
+        <h2>Day-By-Day Mix</h2>
+        <span class="subtle">stacked distribution with daily score</span>
+      </div>
+      <div class="week-bars" id="dayBars"></div>
+    </section>
+  </main>
+
+  <script src="weekly-review.js" onerror="this.onerror=null; this.src='/dashboard/weekly-review.js';"></script>
+</body>
+</html>

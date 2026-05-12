@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Timeforge DB Status</title>
+  <link rel="stylesheet" href="review-shared.css">
+  <link rel="stylesheet" href="/dashboard/review-shared.css">
+</head>
+<body>
+  <main>
+    <nav class="top-nav" aria-label="App navigation">
+      <a href="/">Home</a>
+      <a href="/dashboard/daily.html">Daily</a>
+      <a href="/weekly">Weekly</a>
+      <a href="/monthly">Monthly</a>
+      <a href="/dashboard/trends.html">Trends</a>
+      <a href="/dashboard/compare.html">Compare</a>
+      <a href="/dashboard/settings.html">Settings</a>
+    </nav>
+
+    <header>
+      <div>
+        <h1>DB Status</h1>
+        <p class="subtle" id="statusSubtitle">Loading database status...</p>
+      </div>
+      <div class="review-window">
+        <span class="badge" id="dbBadge">Checking</span>
+        <p class="subtle" id="dbPath"></p>
+      </div>
+    </header>
+
+    <section class="status-grid" id="statusCards" aria-label="Database status cards"></section>
+
+    <section class="depth-grid">
+      <article class="panel">
+        <div class="section-title">
+          <h2>Completed Review Periods</h2>
+          <span class="subtle">selectors only use completed rows</span>
+        </div>
+        <table class="status-table">
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Rows</th>
+              <th>Completed</th>
+              <th>Coverage</th>
+            </tr>
+          </thead>
+          <tbody id="periodSummaryRows"></tbody>
+        </table>
+      </article>
+
+      <aside class="panel status-list">
+        <h2>Source Coverage</h2>
+        <p id="rawCoverage"></p>
+        <p id="selectorRule"></p>
+        <p id="connectorProbe"></p>
+      </aside>
+    </section>
+
+    <section class="depth-grid">
+      <article class="panel">
+        <div class="section-title">
+          <h2>Entered Review Rows</h2>
+          <span class="subtle">current DB payloads</span>
+        </div>
+        <table class="status-table">
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Label</th>
+              <th>Start</th>
+              <th>End</th>
+            </tr>
+          </thead>
+          <tbody id="periodRows"></tbody>
+        </table>
+      </article>
+
+      <aside class="panel status-list">
+        <h2>Recent Sync Runs</h2>
+        <div id="syncRuns"></div>
+      </aside>
+    </section>
+
+    <section class="panel status-list">
+      <h2>Sync Commands</h2>
+      <p><strong>Status:</strong> <span class="mono">python App/calendar_sync.py status</span></p>
+      <p><strong>Seed from export:</strong> <span class="mono">python App/calendar_sync.py import-file "path/to/calendar.ics"</span></p>
+      <p><strong>Install API deps:</strong> <span class="mono">python -m pip install -r requirements.txt</span></p>
+      <p><strong>Seed via API:</strong> <span class="mono">python App/calendar_sync.py google-api --from-start</span></p>
+      <p><strong>Update latest:</strong> <span class="mono">python App/calendar_sync.py google-api</span></p>
+    </section>
+  </main>
+
+  <script src="db-status.js" onerror="this.onerror=null; this.src='/dashboard/db-status.js';"></script>
+</body>
+</html>

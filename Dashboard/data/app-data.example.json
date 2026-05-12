@@ -1,0 +1,75 @@
+{
+  "generatedAt": "2026-01-08T00:00:00-07:00",
+  "home": {
+    "latestDay": null,
+    "latestWeek": null,
+    "latestMonth": null,
+    "db": {
+      "calendarRaw": {
+        "eventCount": 0,
+        "firstStart": null,
+        "lastEnd": null
+      },
+      "periodReviews": {
+        "summaries": [
+          {
+            "type": "day",
+            "completedRows": 0
+          },
+          {
+            "type": "week",
+            "completedRows": 0
+          },
+          {
+            "type": "month",
+            "completedRows": 0
+          }
+        ]
+      }
+    }
+  },
+  "days": {
+    "options": [],
+    "byId": {}
+  },
+  "weeks": {
+    "options": [],
+    "byId": {}
+  },
+  "months": {
+    "options": [],
+    "byId": {}
+  },
+  "trends": {
+    "day": {
+      "type": "day",
+      "rows": []
+    },
+    "week": {
+      "type": "week",
+      "rows": []
+    },
+    "month": {
+      "type": "month",
+      "rows": []
+    }
+  },
+  "settings": {
+    "scoreProfile": {
+      "id": "default-v0",
+      "name": "Default V0",
+      "config": {}
+    },
+    "categoryRules": {
+      "suffixes": {
+        "1": "hard",
+        "2": "soft",
+        "3": "spiritual",
+        "4": "physical",
+        "5": "drift"
+      },
+      "dayAccounting": "Timed events split at 5 AM; all-day date-only events are zero-hour annotations."
+    }
+  },
+  "syncRuns": []
+}

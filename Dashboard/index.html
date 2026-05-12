@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Timeforge</title>
+  <link rel="stylesheet" href="review-shared.css">
+  <link rel="stylesheet" href="/dashboard/review-shared.css">
+</head>
+<body>
+  <main class="home-shell">
+    <div class="home-actions">
+      <button class="sync-button" id="syncButton" type="button">Sync Data</button>
+      <span class="subtle" id="syncStatus">Ready</span>
+    </div>
+
+    <section class="home-title">
+      <h1>Timeforge</h1>
+      <p class="subtle">Local review app backed by SQLite and Google Calendar-derived period data.</p>
+    </section>
+
+    <nav class="nav-grid" aria-label="Time tracking navigation">
+      <a class="nav-card" href="/dashboard/daily.html">
+        <strong>Daily</strong>
+        <span>5 AM accounting days</span>
+      </a>
+      <a class="nav-card" href="/weekly">
+        <strong>Weekly</strong>
+        <span>Completed week reviews</span>
+      </a>
+      <a class="nav-card" href="/monthly">
+        <strong>Monthly</strong>
+        <span>Completed month reviews</span>
+      </a>
+      <a class="nav-card" href="/dashboard/trends.html">
+        <strong>Trends</strong>
+        <span>Progress over time</span>
+      </a>
+      <a class="nav-card" href="/dashboard/compare.html">
+        <strong>Compare</strong>
+        <span>Period against period</span>
+      </a>
+      <a class="nav-card" href="/db">
+        <strong>DB</strong>
+        <span>Coverage and sync status</span>
+      </a>
+      <a class="nav-card" href="/dashboard/settings.html">
+        <strong>Settings</strong>
+        <span>Scoring and rules</span>
+      </a>
+    </nav>
+
+    <section class="home-dashboard">
+      <article class="panel status-list">
+        <h2>Latest Day</h2>
+        <div id="latestDay"></div>
+      </article>
+      <article class="panel status-list">
+        <h2>Latest Week</h2>
+        <div id="latestWeek"></div>
+      </article>
+      <article class="panel status-list">
+        <h2>Latest Month</h2>
+        <div id="latestMonth"></div>
+      </article>
+      <article class="panel status-list">
+        <h2>System</h2>
+        <div id="systemStatus"></div>
+      </article>
+    </section>
+  </main>
+  <script src="home.js" onerror="this.onerror=null; this.src='/dashboard/home.js';"></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+.env
+Data/**
+Dashboard/data/app-data.json
+Dashboard/time-tracking-baseline-*.html
+Reviews/**
+App/logs/**
+__pycache__/**
+*.log
+*.sqlite
+*.sqlite-*
+

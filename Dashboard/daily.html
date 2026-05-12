@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Timeforge Daily Review</title>
+  <link rel="stylesheet" href="review-shared.css">
+  <link rel="stylesheet" href="/dashboard/review-shared.css">
+</head>
+<body>
+  <main>
+    <nav class="top-nav" aria-label="App navigation">
+      <a href="/">Home</a>
+      <a href="/weekly">Weekly</a>
+      <a href="/monthly">Monthly</a>
+      <a href="/dashboard/trends.html">Trends</a>
+      <a href="/dashboard/compare.html">Compare</a>
+      <a href="/db">DB</a>
+    </nav>
+
+    <header>
+      <div>
+        <h1>Daily Review</h1>
+        <p class="subtle" id="subtitle">Loading day...</p>
+      </div>
+      <div class="review-window">
+        <label class="period-control">
+          Day
+          <select id="periodSelect" aria-label="Review day"></select>
+        </label>
+        <label class="check-control" id="estimateControl" hidden>
+          <input type="checkbox" id="estimateToggle">
+          <span>Estimate end day</span>
+        </label>
+        <p class="subtle" id="sourceText"></p>
+      </div>
+    </header>
+
+    <section class="metric-row" id="metricRow" aria-label="Daily totals"></section>
+
+    <section class="panel estimate-panel" id="estimatePanel" hidden></section>
+
+    <section class="score-row">
+      <article class="grade-card">
+        <h3>Score</h3>
+        <div class="grade" id="grade"></div>
+        <p class="subtle" id="scoreText"></p>
+      </article>
+      <article class="panel score-bars" id="scoreBars" aria-label="Score components"></article>
+    </section>
+
+    <section class="review-row">
+      <article class="panel review-card">
+        <h3>Win</h3>
+        <p id="winText"></p>
+      </article>
+      <article class="panel review-card">
+        <h3>Leak</h3>
+        <p id="leakText"></p>
+      </article>
+      <article class="panel review-card">
+        <h3>Sleep</h3>
+        <div class="sleep-number" id="sleepDisplay"></div>
+        <p class="subtle" id="sleepDetail"></p>
+      </article>
+    </section>
+
+    <section class="panel detail-panel">
+      <div class="section-title">
+        <h2>Timeline</h2>
+        <div class="inline-controls">
+          <label class="check-control">
+            <input type="checkbox" id="hideUnscoredToggle">
+            <span>Hide unscored</span>
+          </label>
+        </div>
+      </div>
+      <div class="timeline" id="timeline"></div>
+    </section>
+  </main>
+  <script src="daily.js" onerror="this.onerror=null; this.src='/dashboard/daily.js';"></script>
+</body>
+</html>

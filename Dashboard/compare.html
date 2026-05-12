@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Timeforge Compare</title>
+  <link rel="stylesheet" href="review-shared.css">
+  <link rel="stylesheet" href="/dashboard/review-shared.css">
+</head>
+<body>
+  <main>
+    <nav class="top-nav" aria-label="App navigation">
+      <a href="/">Home</a>
+      <a href="/dashboard/daily.html">Daily</a>
+      <a href="/weekly">Weekly</a>
+      <a href="/monthly">Monthly</a>
+      <a href="/dashboard/trends.html">Trends</a>
+      <a href="/db">DB</a>
+    </nav>
+
+    <header>
+      <div>
+        <h1>Compare</h1>
+        <p class="subtle" id="subtitle">Compare two periods at the same level.</p>
+      </div>
+      <div class="review-window compare-controls">
+        <label class="period-control">
+          Type
+          <select id="typeSelect">
+            <option value="week">Week</option>
+            <option value="month">Month</option>
+            <option value="day">Day</option>
+          </select>
+        </label>
+        <label class="period-control">
+          A
+          <select id="periodA"></select>
+        </label>
+        <label class="period-control">
+          B
+          <select id="periodB"></select>
+        </label>
+      </div>
+    </header>
+
+    <section class="score-row">
+      <article class="grade-card">
+        <h3>Score Delta</h3>
+        <div class="grade" id="scoreDelta"></div>
+        <p class="subtle" id="scoreContext"></p>
+      </article>
+      <article class="panel score-bars" id="deltaBars"></article>
+    </section>
+
+    <section class="depth-grid">
+      <article class="panel">
+        <div class="section-title">
+          <h2>Period A</h2>
+          <span class="subtle" id="labelA"></span>
+        </div>
+        <div class="metric-row compact" id="metricsA"></div>
+      </article>
+      <article class="panel">
+        <div class="section-title">
+          <h2>Period B</h2>
+          <span class="subtle" id="labelB"></span>
+        </div>
+        <div class="metric-row compact" id="metricsB"></div>
+      </article>
+    </section>
+  </main>
+  <script src="compare.js" onerror="this.onerror=null; this.src='/dashboard/compare.js';"></script>
+</body>
+</html>

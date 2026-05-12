@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Timeforge Trends</title>
+  <link rel="stylesheet" href="review-shared.css">
+  <link rel="stylesheet" href="/dashboard/review-shared.css">
+</head>
+<body>
+  <main>
+    <nav class="top-nav" aria-label="App navigation">
+      <a href="/">Home</a>
+      <a href="/dashboard/daily.html">Daily</a>
+      <a href="/weekly">Weekly</a>
+      <a href="/monthly">Monthly</a>
+      <a href="/dashboard/compare.html">Compare</a>
+      <a href="/db">DB</a>
+    </nav>
+
+    <header>
+      <div>
+        <h1>Trends</h1>
+        <p class="subtle" id="subtitle">Loading trend data...</p>
+      </div>
+      <div class="review-window">
+        <label class="period-control">
+          View
+          <select id="typeSelect" aria-label="Trend period type">
+            <option value="week">Weekly</option>
+            <option value="month">Monthly</option>
+            <option value="day">Daily</option>
+          </select>
+        </label>
+      </div>
+    </header>
+
+    <section class="panel">
+      <div class="section-title">
+        <h2>Categories</h2>
+        <span class="subtle">toggle stacked mix sections</span>
+      </div>
+      <div class="toggle-row" id="categoryToggles"></div>
+    </section>
+
+    <section class="panel detail-panel">
+      <div class="section-title">
+        <h2>Category Mix Over Time</h2>
+        <span class="subtle" id="rowCount"></span>
+      </div>
+      <div class="trend-board" id="trendBoard"></div>
+    </section>
+
+    <section class="panel detail-panel">
+      <div class="section-title">
+        <h2>Vertical Trend</h2>
+        <span class="subtle" id="verticalCount"></span>
+      </div>
+      <div class="vertical-trend" id="verticalTrend"></div>
+    </section>
+  </main>
+  <script src="trends.js" onerror="this.onerror=null; this.src='/dashboard/trends.js';"></script>
+</body>
+</html>
