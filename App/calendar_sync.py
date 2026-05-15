@@ -4,7 +4,7 @@ import argparse
 import json
 import sqlite3
 from dataclasses import dataclass
-from datetime import date, datetime, time, timezone
+from datetime import date, datetime, time, timedelta, timezone
 from pathlib import Path
 from typing import Iterable
 
@@ -92,6 +92,12 @@ def parse_datetime_input(value: str) -> str:
     if parsed.tzinfo is None:
         parsed = parsed.astimezone()
     return parsed.replace(microsecond=0).isoformat()
+
+
+def iso_with_lookback(value: str, days: int) -> str:
+    parsed = datetime.fromisoformat(parse_datetime_input(value))
+    adjusted = parsed - timedelta(days=max(0, days))
+    return adjusted.replace(microsecond=0).isoformat()
 
 
 def get_meta(connection: sqlite3.Connection, key: str) -> str | None:
@@ -284,6 +290,34 @@ def upsert_events(
     return count
 
 
+def reconcile_window_events(
+    connection: sqlite3.Connection,
+    calendar_id: str,
+    pulled_event_ids: set[str],
+    window_start: str,
+    window_end: str,
+) -> int:
+    rows = connection.execute(
+        """
+        SELECT event_id
+        FROM calendar_events_raw
+        WHERE calendar_id = ?
+          AND start_time IS NOT NULL
+          AND end_time IS NOT NULL
+          AND start_time < ?
+          AND end_time > ?
+        """,
+        (calendar_id, window_end, window_start),
+    ).fetchall()
+    stale_ids = [row["event_id"] for row in rows if row["event_id"] not in pulled_event_ids]
+    for event_id in stale_ids:
+        connection.execute(
+            "DELETE FROM calendar_events_raw WHERE calendar_id = ? AND event_id = ?",
+            (calendar_id, event_id),
+        )
+    return len(stale_ids)
+
+
 def import_file(path: Path, calendar_id: str) -> int:
     with connect() as connection:
         ensure_schema(connection)
@@ -355,7 +389,16 @@ def sync_google_api(
 
     with connect() as connection:
         ensure_schema(connection)
+        deleted = reconcile_window_events(
+            connection,
+            calendar_id,
+            {event.event_id for event in pulled},
+            time_min,
+            time_max,
+        )
         count = upsert_events(connection, pulled, f"google-api:{calendar_id}", time_min, time_max)
+        if deleted:
+            set_meta(connection, "calendar_sync_reconciled_deleted", str(deleted))
     return count
 
 
@@ -405,6 +448,7 @@ def main() -> None:
     api_parser.add_argument("--start", default=None, help="RFC3339 datetime or YYYY-MM-DD. Defaults to latest raw end, then TIME_OUTPUT_CALENDAR_START.")
     api_parser.add_argument("--end", default=None, help="RFC3339 datetime or YYYY-MM-DD. Defaults to now.")
     api_parser.add_argument("--from-start", action="store_true", help="Ignore latest sync state and seed from TIME_OUTPUT_CALENDAR_START.")
+    api_parser.add_argument("--lookback-days", type=int, default=app_config.SYNC_LOOKBACK_DAYS, help="When using latest sync state, pull this many days before latest raw end so recent edits are repaired.")
 
     subparsers.add_parser("status", help="Print raw calendar sync status.")
 
@@ -416,7 +460,14 @@ def main() -> None:
         with connect() as connection:
             ensure_schema(connection)
             latest = get_meta(connection, "calendar_raw_latest_end")
-        start_value = DEFAULT_CALENDAR_START if args.from_start else (args.start or latest or DEFAULT_CALENDAR_START)
+        if args.from_start:
+            start_value = DEFAULT_CALENDAR_START
+        elif args.start:
+            start_value = args.start
+        elif latest:
+            start_value = iso_with_lookback(latest, args.lookback_days)
+        else:
+            start_value = DEFAULT_CALENDAR_START
         time_min = parse_datetime_input(start_value)
         time_max = parse_datetime_input(args.end) if args.end else now_local_iso()
         count = sync_google_api(args.calendar_id, args.credentials, args.token, time_min, time_max)

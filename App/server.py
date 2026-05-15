@@ -746,7 +746,11 @@ def sync_calendar_and_reviews() -> dict[str, object]:
     with calendar_sync.connect() as connection:
         calendar_sync.ensure_schema(connection)
         latest = calendar_sync.get_meta(connection, "calendar_raw_latest_end")
-    start_value = latest or calendar_sync.DEFAULT_CALENDAR_START
+    start_value = (
+        calendar_sync.iso_with_lookback(latest, app_config.SYNC_LOOKBACK_DAYS)
+        if latest
+        else calendar_sync.DEFAULT_CALENDAR_START
+    )
     time_min = calendar_sync.parse_datetime_input(start_value)
     time_max = calendar_sync.now_local_iso()
     pulled = calendar_sync.sync_google_api(

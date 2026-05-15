@@ -601,6 +601,16 @@ header {
   font-style: normal;
 }
 
+.timeline-row .time-cell {
+  display: grid;
+  gap: 2px;
+}
+
+.timeline-row .time-cell small {
+  color: rgba(148, 163, 184, 0.68);
+  font-size: 11px;
+}
+
 .timeline-row strong {
   overflow: hidden;
   text-overflow: ellipsis;

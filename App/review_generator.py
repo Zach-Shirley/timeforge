@@ -156,7 +156,7 @@ def classify(title: str | None) -> str:
         return NUMBERED[suffix.group(1)]
     if any(term in lowered for term in ("sick", "illness", "fever", "flu")):
         return "unscored"
-    if "sleep" in lowered:
+    if "sleep" in lowered or re.search(r"\bnap(?:ping|ped)?\b", lowered):
         return "sleep"
     if any(term in lowered for term in ("gym", "bjj", "mma", "sparring", "workout", "weightlifting", "cardio", "hiking", "stretch", "massage")):
         return "physical"
@@ -374,6 +374,9 @@ def load_daily_records() -> dict[date, DayData]:
                 "title": row["summary"] or "Untitled",
                 "start": part_start.isoformat(),
                 "end": part_end.isoformat(),
+                "sourceStart": start.isoformat(),
+                "sourceEnd": end.isoformat(),
+                "clippedByAccountingDay": part_start != start or part_end != end,
                 "hours": round(hours, 2),
                 "category": category,
                 "allocations": {key: round(value, 3) for key, value in allocations.items()},

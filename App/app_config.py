@@ -45,6 +45,7 @@ DEFAULT_CALENDAR_START = os.environ.get(
     f"{TRACKING_START_DATE.isoformat()}T00:00:00",
 )
 DAY_START_HOUR = int(os.environ.get("TIME_OUTPUT_DAY_START_HOUR", "5"))
+SYNC_LOOKBACK_DAYS = int(os.environ.get("TIME_OUTPUT_SYNC_LOOKBACK_DAYS", "14"))
 
 GOOGLE_CALENDAR_ID = os.environ.get("TIME_OUTPUT_GOOGLE_CALENDAR_ID", "primary")
 GOOGLE_CREDENTIALS_PATH = env_path("TIME_OUTPUT_GOOGLE_CREDENTIALS_PATH", DATA_DIR / "google_credentials.json")

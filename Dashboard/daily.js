@@ -44,6 +44,19 @@ function timeLabel(value) {
   return new Date(value).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
 }
 
+function timelineTimeCell(event) {
+  const visibleRange = `${timeLabel(event.start)}-${timeLabel(event.end)}`;
+  if (!event.clippedByAccountingDay || !event.sourceStart || !event.sourceEnd) {
+    return `<span>${visibleRange}</span>`;
+  }
+  return `
+    <span class="time-cell">
+      ${visibleRange}
+      <small>full ${timeLabel(event.sourceStart)}-${timeLabel(event.sourceEnd)}</small>
+    </span>
+  `;
+}
+
 function allocationLabel(event) {
   const entries = Object.entries(event.allocations || {});
   if (entries.length <= 1) return `${fmt(event.hours)}h`;
@@ -140,7 +153,7 @@ function renderTimeline(events = [], annotations = []) {
 
   const eventRows = visibleEvents.map((event) => `
     <div class="timeline-row" style="--event-color:${CATEGORY_COLORS[event.category] || "var(--unscored)"}">
-      <span>${timeLabel(event.start)}-${timeLabel(event.end)}</span>
+      ${timelineTimeCell(event)}
       <strong>${escapeHtml(event.title)}</strong>
       <em>${allocationLabel(event)}</em>
     </div>
