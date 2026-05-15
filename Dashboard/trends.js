@@ -59,8 +59,33 @@ function visibleKeys() {
   return trendKeys.filter((key) => enabled.has(key));
 }
 
-function totalHours(row, keys) {
-  return keys.reduce((sum, key) => sum + Number(row.totals[key] || 0), 0);
+function trendTotals(row, type) {
+  const capacity = periodCapacity(row, type);
+  const totals = { ...row.totals };
+  const fixedHours = trendKeys
+    .filter((key) => key !== "unscored")
+    .reduce((sum, key) => sum + Number(totals[key] || 0), 0);
+  const rawUnscored = Number(totals.unscored || 0);
+  totals.unscored = Math.max(0, capacity - fixedHours);
+  totals._rawUnscored = rawUnscored;
+  totals._unscoredAdjustment = totals.unscored - rawUnscored;
+  totals._overflow = Math.max(0, fixedHours - capacity);
+  return totals;
+}
+
+function totalHours(row, keys, type) {
+  const totals = trendTotals(row, type);
+  const shown = keys.reduce((sum, key) => sum + Number(totals[key] || 0), 0);
+  return Math.min(periodCapacity(row, type), shown);
+}
+
+function segmentTitle(key, hours, totals) {
+  if (key !== "unscored" || Math.abs(Number(totals._unscoredAdjustment || 0)) < 0.01) {
+    return `${LABELS[key]}: ${fmt(hours)}h`;
+  }
+  const raw = Number(totals._rawUnscored || 0);
+  const direction = totals._unscoredAdjustment > 0 ? "+" : "";
+  return `${LABELS[key]}: ${fmt(hours)}h (${direction}${fmt(totals._unscoredAdjustment)}h capacity balance from ${fmt(raw)}h raw)`;
 }
 
 function percentChange(current, previous) {
@@ -106,9 +131,10 @@ function renderToggles() {
 function renderStack(row, type) {
   const keys = visibleKeys();
   const capacity = periodCapacity(row, type);
+  const totals = trendTotals(row, type);
   let widthUsed = 0;
   const segments = keys.map((key) => {
-    const hours = Number(row.totals[key] || 0);
+    const hours = Number(totals[key] || 0);
     if (hours <= 0 || widthUsed >= 100) return "";
     const width = Math.max(0, Math.min((hours / capacity) * 100, 100 - widthUsed));
     widthUsed += width;
@@ -116,7 +142,7 @@ function renderStack(row, type) {
     return `
       <span
         class="trend-segment"
-        title="${LABELS[key]}: ${fmt(hours)}h"
+        title="${escapeHtml(segmentTitle(key, hours, totals))}"
         style="width:${width}%; background:${CATEGORY_COLORS[key]}"
       >${hours >= 0.5 ? `<b>${fmt(hours)}</b>` : ""}</span>
     `;
@@ -134,7 +160,7 @@ function renderRows(payload) {
   document.getElementById("rowCount").textContent = `${payload.rows.length} rows`;
   const keys = visibleKeys();
   document.getElementById("trendBoard").innerHTML = payload.rows.map((row) => {
-    const shownHours = totalHours(row, keys);
+    const shownHours = totalHours(row, keys, payload.type);
     return `
       <div class="trend-row">
         <span class="trend-label">${escapeHtml(row.label)}</span>
@@ -175,13 +201,14 @@ function renderVerticalTrend(payload) {
   const bars = rows.map((row, index) => {
     const x = left + ((index + 0.5) * plotWidth / rows.length);
     const capacity = periodCapacity(row, payload.type);
-    const shownHours = totalHours(row, keys);
+    const totals = trendTotals(row, payload.type);
+    const shownHours = totalHours(row, keys, payload.type);
     const shownRatio = Math.min(1, shownHours / capacity);
     points.push([x, base - (shownRatio * (base - top)), shownHours]);
 
     let cumulative = 0;
     const segments = keys.map((key) => {
-      const hours = Number(row.totals[key] || 0);
+      const hours = Number(totals[key] || 0);
       if (hours <= 0 || cumulative >= capacity) return "";
       const cappedHours = Math.min(hours, capacity - cumulative);
       const segmentHeight = (cappedHours / capacity) * (base - top);
