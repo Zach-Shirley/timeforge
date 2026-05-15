@@ -463,7 +463,7 @@ def get_settings() -> dict[str, object]:
         "categoryRules": {
             "suffixes": {"1": "hard", "2": "soft", "3": "spiritual", "4": "physical", "5": "drift"},
             "unscored": ["sleep", "routine", "travel", "chores/errands", "odd tasks"],
-            "dayAccounting": "Timed events split at 5 AM; all-day date-only events are zero-hour annotations.",
+            "dayAccounting": "5 AM accounting days. Sleep is assigned to the wake-up day as one full event; other timed events split at 5 AM.",
         },
     }
 

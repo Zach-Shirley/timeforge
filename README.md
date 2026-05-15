@@ -17,6 +17,7 @@ The app reads calendar events into SQLite, normalizes them into 5 AM accounting 
   - `5` drift / entertainment
 - Unnumbered sleep, routine, chores, travel, illness, and ambiguous blocks remain unscored unless rules classify them.
 - Mixed blocks can be split by percentage, such as `(70% 5, 30% 2)`.
+- Sleep events are assigned to the wake-up day as full events.
 - Date-only / all-day Google Calendar events are annotations, not 24-hour blocks.
 
 ## What Is Not Committed

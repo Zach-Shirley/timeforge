@@ -35,7 +35,7 @@ DRIFT_TARGET_HOURS = 10
 DRIFT_ZERO_LINE_HOURS = 20
 DRIFT_BASE_POINTS = 20
 DRIFT_BONUS_MAX = 5
-DAY_RULE_TEXT = "Uses 5 AM accounting days: timed events split at 5 AM; all-day date-only events are zero-hour annotations."
+DAY_RULE_TEXT = "Uses 5 AM accounting days. Sleep is assigned to the wake-up day as one full event; other timed events split at 5 AM."
 
 
 @dataclass
@@ -249,6 +249,12 @@ def split_by_accounting_day(start: datetime, end: datetime) -> list[tuple[date, 
     return parts
 
 
+def sleep_accounting_date(start: datetime, end: datetime) -> date:
+    if end <= start:
+        return accounting_date_for(start)
+    return accounting_date_for(end - timedelta(seconds=1))
+
+
 def add_date_only_annotation(daily: dict[date, DayData], row: sqlite3.Row) -> None:
     start = date.fromisoformat(row["start_time"])
     end = date.fromisoformat(row["end_time"])
@@ -316,26 +322,41 @@ def normalize_day_records(daily: dict[date, DayData]) -> None:
             end = parse_dt(str(event["end"]))
             if end <= day_start or start >= day_end:
                 continue
-            start = max(start, day_start)
-            end = min(end, day_end)
-            if close_gaps_through and start > cursor:
-                gap = make_gap_event(accounting_day, gap_index, cursor, start)
+
+            coverage_start = max(start, day_start)
+            coverage_end = min(end, day_end)
+            if event.get("coverageOnly"):
+                if close_gaps_through and coverage_start > cursor:
+                    gap = make_gap_event(accounting_day, gap_index, cursor, coverage_start)
+                    gap_index += 1
+                    record.totals.add("unscored", float(gap["hours"]))
+                    normalized_events.append(gap)
+                cursor = max(cursor, coverage_end)
+                continue
+
+            is_full_sleep = bool(event.get("sleepFullEvent"))
+            start_for_gap = coverage_start if is_full_sleep else max(start, day_start)
+            end_for_coverage = coverage_end if is_full_sleep else min(end, day_end)
+            if close_gaps_through and start_for_gap > cursor:
+                gap = make_gap_event(accounting_day, gap_index, cursor, start_for_gap)
                 gap_index += 1
                 record.totals.add("unscored", float(gap["hours"]))
                 normalized_events.append(gap)
-            adjusted_start = max(start, cursor)
-            if end <= adjusted_start:
+
+            adjusted_start = max(start_for_gap, cursor)
+            if end_for_coverage <= adjusted_start:
                 continue
-            hours = duration_hours(adjusted_start, end)
+            hours = duration_hours(start, end) if is_full_sleep else duration_hours(adjusted_start, end_for_coverage)
             adjusted_event = dict(event)
-            adjusted_event["start"] = adjusted_start.isoformat()
-            adjusted_event["end"] = end.isoformat()
+            adjusted_event["start"] = start.isoformat() if is_full_sleep else adjusted_start.isoformat()
+            adjusted_event["end"] = end.isoformat() if is_full_sleep else end_for_coverage.isoformat()
             adjusted_event["hours"] = round(hours, 2)
+            adjusted_event.pop("coverageOnly", None)
             allocations = adjusted_event.get("allocations") if isinstance(adjusted_event.get("allocations"), dict) else {"unscored": 1.0}
             for allocation_category, weight in allocations.items():
                 record.totals.add(str(allocation_category), hours * float(weight))
             normalized_events.append(adjusted_event)
-            cursor = max(cursor, end)
+            cursor = max(cursor, end_for_coverage)
         if close_gaps_through and cursor < day_end:
             gap = make_gap_event(accounting_day, gap_index, cursor, day_end)
             record.totals.add("unscored", float(gap["hours"]))
@@ -363,6 +384,40 @@ def load_daily_records() -> dict[date, DayData]:
         end = parse_dt(row["end_time"])
         allocations = allocation_for_event(row["event_id"], row["summary"], overrides)
         category = max(allocations, key=allocations.get)
+        if category == "sleep":
+            accounting_date = sleep_accounting_date(start, end)
+            record = daily[accounting_date]
+            hours = duration_hours(start, end)
+            if hours > 0:
+                record.events.append({
+                    "id": row["event_id"],
+                    "sourceId": row["event_id"],
+                    "title": row["summary"] or "Untitled",
+                    "start": start.isoformat(),
+                    "end": end.isoformat(),
+                    "sourceStart": start.isoformat(),
+                    "sourceEnd": end.isoformat(),
+                    "clippedByAccountingDay": False,
+                    "sleepFullEvent": True,
+                    "hours": round(hours, 2),
+                    "category": category,
+                    "allocations": {key: round(value, 3) for key, value in allocations.items()},
+                })
+            for index, (coverage_date, part_start, part_end) in enumerate(split_by_accounting_day(start, end), start=1):
+                if coverage_date == accounting_date:
+                    continue
+                daily[coverage_date].events.append({
+                    "id": f"{row['event_id']}#coverage-{index}",
+                    "sourceId": row["event_id"],
+                    "title": row["summary"] or "Untitled",
+                    "start": part_start.isoformat(),
+                    "end": part_end.isoformat(),
+                    "hours": round(duration_hours(part_start, part_end), 2),
+                    "category": category,
+                    "allocations": {"sleep": 1.0},
+                    "coverageOnly": True,
+                })
+            continue
         for index, (accounting_date, part_start, part_end) in enumerate(split_by_accounting_day(start, end), start=1):
             hours = duration_hours(part_start, part_end)
             if hours <= 0:
